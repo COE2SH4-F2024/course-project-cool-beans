@@ -54,8 +54,8 @@ void GetInput(void)
 
 void RunLogic(void)
 {
-
-    
+    myPlayer->updatePlayerDir();
+    myPlayer->movePlayer();
 }
 
 void DrawScreen(void)

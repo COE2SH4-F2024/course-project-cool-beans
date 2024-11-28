@@ -101,6 +101,10 @@ objPos objPosArrayList::getElement(int index) const
     {
         throw out_of_range("Index out of range.");
     }
+    if(index >= listSize)
+    {
+        return objPos();
+    }
    
     return aList[index];
 }

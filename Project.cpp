@@ -10,6 +10,7 @@ using namespace std;
 
 Player *myPlayer;
 GameMechs *myGM;
+bool hit = true;
 
 void Initialize(void);
 void GetInput(void);
@@ -43,13 +44,27 @@ void Initialize(void)
     MacUILib_init();
     MacUILib_clearScreen();
 
+    srand(time(NULL));
+
     myGM = new GameMechs();
     myPlayer = new Player(myGM);
 }
 
 void GetInput(void)
 {
-   
+    char simulatedInput;
+    int pressed;
+
+    pressed = MacUILib_hasChar();
+
+    if(pressed == 1){
+        simulatedInput = MacUILib_getChar();
+    }
+    
+    myGM->setInput(simulatedInput);
+    if (simulatedInput == 'q') {
+        myGM->setExitTrue();
+    }
 }
 
 void RunLogic(void)
@@ -63,6 +78,13 @@ void DrawScreen(void)
     MacUILib_clearScreen();
     
     objPos playerPos = myPlayer->getPlayerPos();
+
+    if (hit == true)
+    {
+        myGM->generateFood(playerPos);
+        hit = false;
+    }
+    const objPos* foodPos = myGM->getFoodPos();
     
     for(int j = 0; j < myGM->getBoardSizeY(); j++)
     {
@@ -88,7 +110,15 @@ void DrawScreen(void)
     }
 
     MacUILib_printf("\n");
-    MacUILib_printf("Player[x, y] = [%d, %d], %c", playerPos.pos->x, playerPos.pos->y, playerPos.symbol);
+    MacUILib_printf("Enter move (w/a/s/d) or q to quit: ");
+    MacUILib_printf("\n\nPlayer[x, y] = [%d, %d], %c", playerPos.pos->x, playerPos.pos->y, playerPos.symbol);
+    MacUILib_printf("\nFood[x, y] = [%d, %d], %c", foodPos->pos->x, foodPos->pos->y, foodPos->getSymbol());
+    MacUILib_printf("\nScore: %d\nScore is currently increasing by %d point(s)!", myGM->getScore(), myGM->getPoints());
+    //can change score statement later
+    if (myGM->getExitFlagStatus() == true)
+    {
+        MacUILib_printf("\n-----GAME OVER-----\nScore: %d", myGM->getScore());
+    }
 }
 
 void LoopDelay(void)

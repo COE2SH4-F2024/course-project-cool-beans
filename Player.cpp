@@ -4,11 +4,16 @@
 Player::Player(GameMechs* thisGMRef)
 {
     mainGameMechsRef = thisGMRef;
+    playerPosList = new objPosArrayList();
     myDir = STOP;
 
-    playerPos.pos->x = mainGameMechsRef->getBoardSizeX() / 2;
-    playerPos.pos->y = mainGameMechsRef->getBoardSizeY() / 2;
-    playerPos.symbol = '*';
+    objPos headPos(thisGMRef->getBoardSizeX() / 2, thisGMRef->getBoardSizeY() / 2, '*');
+
+    playerPosList->insertHead(headPos);
+
+    //playerPos.pos->x = mainGameMechsRef->getBoardSizeX() / 2;
+    //playerPos.pos->y = mainGameMechsRef->getBoardSizeY() / 2;
+    //playerPos.symbol = '*';
     // more actions to be included
 }
 
@@ -16,11 +21,12 @@ Player::Player(GameMechs* thisGMRef)
 Player::~Player()
 {
     // delete any heap members here
+    delete playerPosList;
 }
 
-objPos Player::getPlayerPos() const
+objPosArrayList* Player::getPlayerPos() const
 {
-    return playerPos;
+    return playerPosList;
     // return the reference to the playerPos arrray list
 }
 
@@ -67,9 +73,14 @@ void Player::updatePlayerDir()
 
 void Player::movePlayer()
 {
+    updatePlayerDir(); //???
+
+    //TO DO - temp objpos to calc new head pos, get head element of arraylist
+
     // PPA3 Finite State Machine logic
     switch(myDir)
     {
+        //TO DO - calc new pos of head using temp objpos
         case UP:  // Decrease y if direction is up, wrap around when at boundary
             playerPos.pos->y--;
             if(playerPos.pos->y < 1)
@@ -106,6 +117,11 @@ void Player::movePlayer()
         default:
             break;
     }
+    //TO DO - insert temp objpos to head of list
+
+    //Feat 2 TO DO - check if new temp objpos overlaps food pos (gamemechs), use isPosEqual from objPos class
+    //if overlap, food consumed, do not remove tail, increase score
+    //if no overlap, remove tail, complete movement
 }
 
 // More methods to be added

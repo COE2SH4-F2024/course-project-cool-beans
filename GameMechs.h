@@ -12,21 +12,23 @@ using namespace std;
 class GameMechs
 {
     private:
-        char input;
+        char input; //last input
         bool exitFlag;
         bool loseFlag;
         int score;
+        int points;
 
         int boardSizeX;
         int boardSizeY;
 
-        objPos food;
+        objPos* food;
 
     public:
         GameMechs();
         GameMechs(int boardX, int boardY);
-        ~GameMechs(); // is this one needed at all? Why or why not?
+        ~GameMechs(); 
         
+        //getters and setters
         bool getExitFlagStatus() const; 
         void setExitTrue();
         bool getLoseFlagStatus() const;
@@ -43,6 +45,13 @@ class GameMechs
         void incrementScore();
         
         // More methods should be added here
+
+        int getPoints() const;
+        void setPoints(int new_points);
+
+        void generateFood(objPos blockOff);
+        const objPos* getFoodPos() const;
+
 };
 
 #endif

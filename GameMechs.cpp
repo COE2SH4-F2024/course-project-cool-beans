@@ -101,20 +101,33 @@ int GameMechs::getPoints() const
     return points;
 }
 
-void GameMechs::generateFood(objPos blockOff){//block off = players current position
+void GameMechs::generateFood(objPosArrayList& playerPosList){
     int foodX, foodY;
 
     int X = boardSizeX - 2;
     int Y = boardSizeY - 2;
     //considering all ends of the border
 
+    bool overlap;
+    
     do
     {
         foodX = (rand() % X) + 1;
         foodY = (rand() % Y) + 1;
 
-    } while (foodX == blockOff.pos->x && foodY == blockOff.pos->y);
+        overlap = false;
 
+        for(int i = 0; i < playerPosList.getSize(); i++)
+        {
+            objPos segment = playerPosList.getElement(i);
+            if (segment.pos->x == foodX && segment.pos->y == foodY)
+            {
+                overlap = true;  // Food overlaps with snake, regenerate
+                break;
+            }
+        }
+
+    } while (overlap);
     
     food->setObjPos(foodX,foodY,'O');
     

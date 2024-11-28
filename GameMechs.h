@@ -49,7 +49,7 @@ class GameMechs
         int getPoints() const;
         void setPoints(int new_points);
 
-        void generateFood(objPos blockOff);
+        void generateFood(objPosArrayList& playerPosList);
         const objPos* getFoodPos() const;
 
 };

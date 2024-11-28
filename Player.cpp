@@ -8,13 +8,7 @@ Player::Player(GameMechs* thisGMRef)
     myDir = STOP;
 
     objPos headPos(thisGMRef->getBoardSizeX() / 2, thisGMRef->getBoardSizeY() / 2, '*');
-
     playerPosList->insertHead(headPos);
-
-    //playerPos.pos->x = mainGameMechsRef->getBoardSizeX() / 2;
-    //playerPos.pos->y = mainGameMechsRef->getBoardSizeY() / 2;
-    //playerPos.symbol = '*';
-    // more actions to be included
 }
 
 
@@ -33,7 +27,7 @@ objPosArrayList* Player::getPlayerPos() const
 void Player::updatePlayerDir()
 {
     char input = mainGameMechsRef->getInput();
-        // PPA3 input processing logic     
+             
     switch(input)
     {                      
         case 'w':  // Set direction to up only if stopped, left, or right
@@ -73,43 +67,42 @@ void Player::updatePlayerDir()
 
 void Player::movePlayer()
 {
-    updatePlayerDir(); //???
+    updatePlayerDir();
 
-    //TO DO - temp objpos to calc new head pos, get head element of arraylist
+    objPos currentHead = playerPosList->getHeadElement();
+    objPos newHead = currentHead;
 
-    // PPA3 Finite State Machine logic
     switch(myDir)
     {
-        //TO DO - calc new pos of head using temp objpos
         case UP:  // Decrease y if direction is up, wrap around when at boundary
-            playerPos.pos->y--;
-            if(playerPos.pos->y < 1)
+            newHead.pos->y--;
+            if(newHead.pos->y < 1)
             {
-                playerPos.pos->y = mainGameMechsRef->getBoardSizeY() - 2;
+                newHead.pos->y = mainGameMechsRef->getBoardSizeY() - 2;
             }
             break;
 
         case LEFT:  // Decrease x if direction is left, wrap around when at boundary
-            playerPos.pos->x--;
-            if(playerPos.pos->x < 1)
+            newHead.pos->x--;
+            if(newHead.pos->x < 1)
             {
-                playerPos.pos->x = mainGameMechsRef->getBoardSizeX() - 2;
+                newHead.pos->x = mainGameMechsRef->getBoardSizeX() - 2;
             }
             break;
         
         case DOWN:  // Increase y if direction is down, wrap around when at boundary
-            playerPos.pos->y++;
-            if(playerPos.pos->y > mainGameMechsRef->getBoardSizeY() - 2)
+            newHead.pos->y++;
+            if(newHead.pos->y > mainGameMechsRef->getBoardSizeY() - 2)
             {
-                playerPos.pos->y = 1;
+                newHead.pos->y = 1;
             }
             break;
         
         case RIGHT:  // Increase x if direction is right, wrap around when at boundary
-            playerPos.pos->x++;
-            if(playerPos.pos->x > mainGameMechsRef->getBoardSizeX() - 2)
+            newHead.pos->x++;
+            if(newHead.pos->x > mainGameMechsRef->getBoardSizeX() - 2)
             {
-                playerPos.pos->x = 1;
+                newHead.pos->x = 1;
             }
             break;
 
@@ -117,11 +110,17 @@ void Player::movePlayer()
         default:
             break;
     }
-    //TO DO - insert temp objpos to head of list
-
-    //Feat 2 TO DO - check if new temp objpos overlaps food pos (gamemechs), use isPosEqual from objPos class
-    //if overlap, food consumed, do not remove tail, increase score
-    //if no overlap, remove tail, complete movement
+    if (newHead.pos->x == mainGameMechsRef->getFoodPos()->pos->x && newHead.pos->y == mainGameMechsRef->getFoodPos()->pos->y)
+    {
+        playerPosList->insertHead(newHead);
+        mainGameMechsRef->generateFood(*playerPosList);
+        mainGameMechsRef->incrementScore();
+    }
+    else
+    {
+        playerPosList->insertHead(newHead);
+        playerPosList->removeTail();
+    }
 }
 
 // More methods to be added

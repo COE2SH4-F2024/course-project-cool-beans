@@ -12,6 +12,7 @@ using namespace std;
 class GameMechs
 {
     private:
+        
         char input; //last input
         bool exitFlag;
         bool loseFlag;
@@ -21,12 +22,14 @@ class GameMechs
         int boardSizeX;
         int boardSizeY;
 
-        objPos* food;
-
+        objPosArrayList* foodPosList;
+        
     public:
         GameMechs();
         GameMechs(int boardX, int boardY);
         ~GameMechs(); 
+
+        objPosArrayList* getFoodPos() const;
         
         //getters and setters
         bool getExitFlagStatus() const; 
@@ -50,8 +53,7 @@ class GameMechs
         void setPoints(int new_points);
 
         void generateFood(objPosArrayList& playerPosList);
-        const objPos* getFoodPos() const;
-
+        
 };
 
 #endif

@@ -3,33 +3,39 @@
 GameMechs::GameMechs()
 {
     input = 0;
-    points = 1;
+    points = 0;
     exitFlag = false;
     loseFlag = false;
     score = 0;
     boardSizeX = 30;
     boardSizeY = 15;
-    food = new objPos(0, 0, 'O');
+    foodPosList = new objPosArrayList();
+    
 }
 
 GameMechs::GameMechs(int boardX, int boardY)
 {
     input = 0;
-    points = 1;
+    points = 0;
     exitFlag = false;
     loseFlag = false;
     score = 0;
     boardSizeX = boardX;
     boardSizeY = boardY;
-    food = new objPos(0, 0, 'O');
+    foodPosList = new objPosArrayList();
 }
 
 
 GameMechs::~GameMechs()
 {
-    delete food;
+    delete foodPosList;
 }
 
+objPosArrayList* GameMechs::getFoodPos() const
+{
+    return foodPosList;
+    // return the reference to the foodPos array list
+}
 
 
 bool GameMechs::getExitFlagStatus() const
@@ -102,37 +108,55 @@ int GameMechs::getPoints() const
 }
 
 void GameMechs::generateFood(objPosArrayList& playerPosList){
+
     int foodX, foodY;
+
+    char foodSymbol[3] = {'0','+','!'};
+
+    int randSymbol = 0;
 
     int X = boardSizeX - 2;
     int Y = boardSizeY - 2;
     //considering all ends of the border
 
     bool overlap;
-    
-    do
-    {
-        foodX = (rand() % X) + 1;
-        foodY = (rand() % Y) + 1;
 
-        overlap = false;
+    objPos newFood(0,0,'0');
 
-        for(int i = 0; i < playerPosList.getSize(); i++)
+    for (int i = 0; i < 3; i++)
+    {   
+        do
         {
-            objPos segment = playerPosList.getElement(i);
-            if (segment.pos->x == foodX && segment.pos->y == foodY)
+            foodX = (rand() % X) + 1;
+            foodY = (rand() % Y) + 1;
+            randSymbol = rand() % 3;
+
+            overlap = false;
+
+            for(int i = 0; i < playerPosList.getSize(); i++)
             {
-                overlap = true;  // Food overlaps with snake, regenerate
-                break;
+                objPos segment = playerPosList.getElement(i);
+                if (segment.pos->x == foodX && segment.pos->y == foodY)
+                {
+                    overlap = true;  // Food overlaps with snake, regenerate
+                    break;
+                }
+                for (int j = 0; j < foodPosList->getSize(); j++)
+                {   
+                    objPos segmentFood = foodPosList->getElement(j);
+                    if(segmentFood.pos->x == foodX && segmentFood.pos->y == foodY)
+                    {
+                        overlap = true;  // Food overlaps with snake, regenerate
+                        break;
+                    }
+                }
+                
             }
-        }
 
-    } while (overlap);
-    
-    food->setObjPos(foodX,foodY,'O');
-    
+        } while (overlap);
+
+        objPos newFood(foodX,foodY,foodSymbol[randSymbol]);
+        foodPosList->insertHead(newFood);
+    }    
 }
 
-const objPos* GameMechs::getFoodPos() const{
-    return food;
-}

@@ -10,7 +10,6 @@ using namespace std;
 
 Player *myPlayer;
 GameMechs *myGM;
-bool hit = true;
 
 void Initialize(void);
 void GetInput(void);
@@ -79,18 +78,22 @@ void DrawScreen(void)
     
     objPosArrayList* playerPos = myPlayer->getPlayerPos();
     int playerSize = playerPos->getSize();
-    const objPos* foodPos = myGM->getFoodPos();
-    int boardX = myGM->getBoardSizeX();
-    int boardY = myGM->getBoardSizeY();
-    objPos currentHead = myPlayer->getPlayerPos()->getHeadElement();
 
-    // just for now to only generate one character, global variable at the top currently.
-    if (hit == true)
+    objPosArrayList* foodPos = myGM->getFoodPos();
+    
+    if (foodPos->getSize() < 3)
     {
         myGM->generateFood(*playerPos);
-        hit = false;
     }
     
+    int foodSize = foodPos->getSize();
+    
+    int boardX = myGM->getBoardSizeX();
+    int boardY = myGM->getBoardSizeY();
+
+
+    objPos currentHead = myPlayer->getPlayerPos()->getHeadElement();
+
     for(int j = 0; j < boardY; j++)
     {
         for(int i = 0; i < boardX; i++)
@@ -107,14 +110,21 @@ void DrawScreen(void)
                     break;
                 }
             }
+            for(int m = 0; m < foodSize; m++)
+            {
+                    objPos thisSeg = foodPos->getElement(m);
+
+                    if(thisSeg.pos->x == i && thisSeg.pos->y == j)
+                    {
+                        MacUILib_printf("%c", thisSeg.symbol);
+                        printed = true;
+                        break;
+                    }
+            }
             
             if(!printed)
-            {
-                if (i == foodPos->pos->x && j == foodPos->pos->y) 
-                {
-                    MacUILib_printf("%c", foodPos->symbol); 
-                }
-                else if(i == boardX - 1)
+            {   
+                if(i == boardX - 1)
                 {
                     MacUILib_printf("#\n");
                 }
@@ -133,8 +143,16 @@ void DrawScreen(void)
     MacUILib_printf("\n\n");
     MacUILib_printf("Enter move (w/a/s/d) or q to quit: ");
     MacUILib_printf("\n\nPlayer[x, y] = [%d, %d], %c", currentHead.pos->x, currentHead.pos->y, currentHead.symbol);
-    MacUILib_printf("\nFood[x, y] = [%d, %d], %c", foodPos->pos->x, foodPos->pos->y, foodPos->getSymbol());
-    MacUILib_printf("\nScore: %d\nScore is currently increasing by %d point(s)!", myGM->getScore(), myGM->getPoints());
+
+    objPos currentFood = foodPos->getElement(0);
+    for (int i = 0; i < foodSize; i++)
+    {
+        currentFood = foodPos->getElement(i);
+        MacUILib_printf("\nFood %d [x, y] = [%d, %d], %c",i+1,currentFood.pos->x, currentFood.pos->y, currentFood.symbol);
+    }
+    
+    MacUILib_printf("\n\nEffects only increases score. Tail will always increase by 1.\n1 point = 0\t2 points = +\t3 points = !\nScore: %d \n+%d points added!",myGM->getScore(),myGM->getPoints());
+
     //can change score statement later
 
     if (myGM->getExitFlagStatus() == true)

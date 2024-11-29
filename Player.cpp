@@ -21,7 +21,7 @@ Player::~Player()
 objPosArrayList* Player::getPlayerPos() const
 {
     return playerPosList;
-    // return the reference to the playerPos arrray list
+    // return the reference to the playerPos array list
 }
 
 void Player::updatePlayerDir()
@@ -71,6 +71,7 @@ void Player::movePlayer()
 
     objPos currentHead = playerPosList->getHeadElement();
     objPos newHead = currentHead;
+    objPosArrayList* foodPosList = mainGameMechsRef->getFoodPos();
 
     switch(myDir)
     {
@@ -110,16 +111,48 @@ void Player::movePlayer()
         default:
             break;
     }
-    if (newHead.pos->x == mainGameMechsRef->getFoodPos()->pos->x && newHead.pos->y == mainGameMechsRef->getFoodPos()->pos->y)
+    objPos currentFood = foodPosList->getElement(0);
+
+    for (int i = 0; i < foodPosList->getSize(); i++)
     {
-        playerPosList->insertHead(newHead);
-        mainGameMechsRef->generateFood(*playerPosList);
+        currentFood = foodPosList->getElement(i);
+        if (newHead.pos->x == currentFood.pos->x && newHead.pos->y == currentFood.pos->y)
+        {
+            playerPosList->insertHead(newHead);
+
+            char symbolCollison = currentFood.getSymbol();
+            switch ((int)symbolCollison)
+            {
+            case 48:
+                mainGameMechsRef->setPoints(1);
+                break;
+            case 43:
+                mainGameMechsRef->setPoints(2);
+                break;
+            case 33:
+                mainGameMechsRef->setPoints(3);
+                break;
+            default:
+                break;
+            }
+        
+        //these have to be after
         mainGameMechsRef->incrementScore();
-    }
-    else
-    {
-        playerPosList->insertHead(newHead);
-        playerPosList->removeTail();
+        for (int j = 0; j < foodPosList->getSize(); j++)
+        {
+            foodPosList->removeHead();
+            foodPosList->removeTail();
+        }
+        
+        mainGameMechsRef->generateFood(*playerPosList);
+
+        }
+        else
+        {
+            playerPosList->insertHead(newHead);
+            playerPosList->removeTail();
+        }
+        
     }
 }
 

@@ -3,9 +3,6 @@
 
 using namespace std;
 
-// Check lecture contents on general purpose array list construction, 
-// and modify it to support objPos array list construction.
-
 objPosArrayList::objPosArrayList()
 {
     arrayCapacity = ARRAY_MAX_CAP;
@@ -30,13 +27,14 @@ void objPosArrayList::insertHead(objPos thisPos)
         throw overflow_error("Array capacity exceeded.");
     }
 
+    // Decrease each index location to make room for head element
     for(int i = listSize; i > 0; i--)
     {
         aList[i] = aList[i - 1];
     }
 
-    aList[0] = thisPos;
-    listSize++;
+    aList[0] = thisPos; // Insert head at index 0
+    listSize++; // Increase list size
 }
 
 void objPosArrayList::insertTail(objPos thisPos)
@@ -46,7 +44,7 @@ void objPosArrayList::insertTail(objPos thisPos)
         throw overflow_error("Array capacity exceeded.");
     }
 
-    aList[listSize++] = thisPos;
+    aList[listSize++] = thisPos; // Insert tail at listSize + 1
 }
 
 void objPosArrayList::removeHead()
@@ -56,12 +54,13 @@ void objPosArrayList::removeHead()
         throw underflow_error("Cannot remove from empty list.");
     }
 
+    // Increase each index location to replace head element
     for(int i = 0; i < listSize - 1; i++)
     {
         aList[i] = aList[i + 1];
     }
 
-    listSize--;
+    listSize--; // Decrease list size
 }
 
 void objPosArrayList::removeTail()
@@ -71,7 +70,7 @@ void objPosArrayList::removeTail()
         throw underflow_error("Cannot remove from empty list.");
     }
 
-    listSize--;
+    listSize--; // Decrease list size to remove index and tail element
 }
 
 void objPosArrayList::removeElement(int index)
@@ -80,15 +79,19 @@ void objPosArrayList::removeElement(int index)
     {
         throw underflow_error("Cannot remove from empty list.");
     }
+
     if(index < 0 || index >= arrayCapacity)
     {
         throw out_of_range("Index out of range.");
     }
-    for (int i = index; i < listSize - 1; ++i) {
+
+    // Starting from target index, decrease each index location to remove element
+    for (int i = index; i < listSize - 1; ++i) 
+    {
         aList[i] = aList[i + 1];
     }
 
-    listSize--;
+    listSize--; // Decrease list size
 }
 
 
@@ -118,6 +121,7 @@ objPos objPosArrayList::getElement(int index) const
     {
         throw out_of_range("Index out of range.");
     }
+
     if(index >= listSize)
     {
         return objPos();

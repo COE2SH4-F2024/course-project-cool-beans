@@ -158,11 +158,11 @@ void Player::movePlayer()
         
         mainGameMechsRef->incrementScore(); // Update total score
 
+        int size = foodPosList->getSize();
         // Clear all food
-        for (int j = 0; j < foodPosList->getSize(); j++)
+        for (int j = 0; j < size; j++)
         {
-            foodPosList->removeHead();
-            foodPosList->removeTail();
+            foodPosList->removeElement(j);
         }
         
         mainGameMechsRef->generateFood(*playerPosList); // Generate new food

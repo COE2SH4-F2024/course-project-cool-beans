@@ -74,6 +74,24 @@ void objPosArrayList::removeTail()
     listSize--;
 }
 
+void objPosArrayList::removeElement(int index)
+{
+    if(listSize == 0)
+    {
+        throw underflow_error("Cannot remove from empty list.");
+    }
+    if(index < 0 || index >= arrayCapacity)
+    {
+        throw out_of_range("Index out of range.");
+    }
+    for (int i = index; i < listSize - 1; ++i) {
+        aList[i] = aList[i + 1];
+    }
+
+    listSize--;
+}
+
+
 objPos objPosArrayList::getHeadElement() const
 {
     if(listSize == 0)

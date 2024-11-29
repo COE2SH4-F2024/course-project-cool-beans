@@ -159,6 +159,7 @@ void Player::movePlayer()
         mainGameMechsRef->incrementScore(); // Update total score
 
         int size = foodPosList->getSize();
+        
         // Clear all food
         for (int j = 0; j < size; j++)
         {

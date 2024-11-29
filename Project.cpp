@@ -41,6 +41,7 @@ void Initialize(void)
     
     srand(time(NULL));
 
+    // Initialize heap members
     myGM = new GameMechs();
     myPlayer = new Player(myGM);
 }
@@ -59,6 +60,7 @@ void GetInput(void)
     
     myGM->setInput(simulatedInput);
 
+    // Set exit flag if q is pressed
     if (simulatedInput == 'q') 
     {
         myGM->setExitTrue();
@@ -67,6 +69,7 @@ void GetInput(void)
 
 void RunLogic(void)
 {
+    // Use Player class to update move player logic
     myPlayer->updatePlayerDir();
     myPlayer->movePlayer(); 
 }
@@ -75,10 +78,9 @@ void DrawScreen(void)
 {
     MacUILib_clearScreen();
     
-    objPosArrayList* playerPos = myPlayer->getPlayerPos();
-    int playerSize = playerPos->getSize();
-
-    objPosArrayList* foodPos = myGM->getFoodPos();
+    objPosArrayList* playerPos = myPlayer->getPlayerPos(); // Initialize player position
+    int playerSize = playerPos->getSize(); // Initialize player size
+    objPosArrayList* foodPos = myGM->getFoodPos(); // Initialize food position
     
     if (foodPos->getSize() < 3)
     {
@@ -121,6 +123,7 @@ void DrawScreen(void)
                     }
             }
             
+            // If not player, print border and blank spaces
             if(!printed)
             {   
                 if(i == boardX - 1)
@@ -167,6 +170,7 @@ void LoopDelay(void)
 
 void CleanUp(void)
 {
+    // Delete heap members
     delete myPlayer; 
     delete myGM;
 

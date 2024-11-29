@@ -162,15 +162,14 @@ void DrawScreen(void)
         currentFood = foodPos->getElement(i);
         MacUILib_printf("\nFood %d [x, y] = [%d, %d], %c",i+1,currentFood.pos->x, currentFood.pos->y, currentFood.symbol);
     }
-
-    MacUILib_printf("\nSnake Length: %d", playerSize);
     
     //Stuff for printed related to score
     MacUILib_printf("\n\nEffects only increases score. Tail will always increase by 1.\n1 point = 0\t2 points = +\t3 points = !\nScore: %d \n+%d points added!",myGM->getScore(),myGM->getPoints());
+    MacUILib_printf("\nSnake Length: %d", playerSize);
 
     if (myGM->getExitFlagStatus() == true)
     {
-        MacUILib_printf("\n-----GAME OVER-----\nScore: %d", myGM->getScore());
+        MacUILib_printf("\n\n-----GAME OVER-----\nScore: %d", myGM->getScore());
     }   
 }
 

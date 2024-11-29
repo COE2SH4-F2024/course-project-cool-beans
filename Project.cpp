@@ -164,7 +164,7 @@ void DrawScreen(void)
     }
     
     //Stuff for printed related to score
-    MacUILib_printf("\n\nEffects only increases score. Tail will always increase by 1.\n1 point = 0\t2 points = +\t3 points = !\nScore: %d \n+%d points added!",myGM->getScore(),myGM->getPoints());
+    MacUILib_printf("\n\nEffects only increases score. Tail will always increase by 1.\n1 point = 0\t2 points = +\t3 points = !\n\nScore: %d \t+%d points added!",myGM->getScore(),myGM->getPoints());
     MacUILib_printf("\nSnake Length: %d", playerSize);
 
     if (myGM->getExitFlagStatus() == true)

@@ -127,20 +127,20 @@ void Player::movePlayer()
         }
     }
 
-    objPos currentFood = foodPosList->getElement(0);
-
+    
     // Check for collision with food
     for (int i = 0; i < foodPosList->getSize(); i++)
     {
-        currentFood = foodPosList->getElement(i);
+        objPos currentFood = foodPosList->getElement(i); //get food element at i to compared with snake/player body
 
-        if (newHead.pos->x == currentFood.pos->x && newHead.pos->y == currentFood.pos->y)
+        if (newHead.pos->x == currentFood.pos->x && newHead.pos->y == currentFood.pos->y) //see if food element at i collided with snake/player body
         {
             playerPosList->insertHead(newHead); // Add new head without removing tail if food collision
 
-            // Update score based on food symbol
+            // get the food symbol that the snake has collided with
             char symbolCollison = currentFood.getSymbol();
 
+            // Update score based on food symbol
             switch ((int)symbolCollison)
             {
             case 48:
@@ -158,13 +158,14 @@ void Player::movePlayer()
         
         mainGameMechsRef->incrementScore(); // Update total score
 
-        int size = foodPosList->getSize();
+        int size = foodPosList->getSize(); //get size of foodPosList to know how many to remove
         
         // Clear all food
         for (int j = 0; j < size; j++)
         {
             foodPosList->removeElement(j);
         }
+        
         
         mainGameMechsRef->generateFood(*playerPosList); // Generate new food
 

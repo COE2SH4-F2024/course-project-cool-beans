@@ -8,6 +8,7 @@ using namespace std;
 
 #define DELAY_CONST 100000
 
+//Player and GameMechs initialized
 Player *myPlayer;
 GameMechs *myGM;
 
@@ -39,6 +40,7 @@ void Initialize(void)
     MacUILib_init();
     MacUILib_clearScreen();
     
+    //random generator
     srand(time(NULL));
 
     // Initialize heap members
@@ -47,7 +49,8 @@ void Initialize(void)
 }
 
 void GetInput(void)
-{
+{   
+    //check if key has been pressed then get input(stored in simulatedInput)
     char simulatedInput;
     int pressed;
 
@@ -82,28 +85,33 @@ void DrawScreen(void)
     int playerSize = playerPos->getSize(); // Initialize player size
     objPosArrayList* foodPos = myGM->getFoodPos(); // Initialize food position
     
+    //at the beginning of the game foodPos = 0, generate 3 new foods only for the beginning
     if (foodPos->getSize() < 3)
     {
         myGM->generateFood(*playerPos);
     }
     
+    //get food list size
     int foodSize = foodPos->getSize();
     
+    //boarder size
     int boardX = myGM->getBoardSizeX();
     int boardY = myGM->getBoardSizeY();
 
+    //get head element (for printing elements)
     objPos currentHead = myPlayer->getPlayerPos()->getHeadElement();
 
     for(int j = 0; j < boardY; j++)
     {
         for(int i = 0; i < boardX; i++)
-        {
+        {   
+            //print player character first
             bool printed = false;
             for(int k = 0; k < playerSize; k++)
             {
                 objPos thisSeg = playerPos->getElement(k);
 
-                if(thisSeg.pos->x == i && thisSeg.pos->y == j)
+                if(thisSeg.pos->x == i && thisSeg.pos->y == j)//if i and j match player position, print
                 {
                     MacUILib_printf("%c", thisSeg.symbol);
                     printed = true;
@@ -111,11 +119,12 @@ void DrawScreen(void)
                 }
             }
 
+            //print food character
             for(int m = 0; m < foodSize; m++)
             {
                     objPos thisSeg = foodPos->getElement(m);
 
-                    if(thisSeg.pos->x == i && thisSeg.pos->y == j)
+                    if(thisSeg.pos->x == i && thisSeg.pos->y == j)//if i and j match food position, print
                     {
                         MacUILib_printf("%c", thisSeg.symbol);
                         printed = true;
@@ -144,8 +153,9 @@ void DrawScreen(void)
     
     MacUILib_printf("\n\n");
     MacUILib_printf("Enter move (w/a/s/d) or q to quit: ");
-    MacUILib_printf("\n\nPlayer[x, y] = [%d, %d], %c", currentHead.pos->x, currentHead.pos->y, currentHead.symbol);
+    MacUILib_printf("\n\nPlayer[x, y] = [%d, %d], %c", currentHead.pos->x, currentHead.pos->y, currentHead.symbol); //player position
 
+    //print all the positions of the food elements
     objPos currentFood = foodPos->getElement(0);
     for (int i = 0; i < foodSize; i++)
     {
@@ -155,6 +165,7 @@ void DrawScreen(void)
 
     MacUILib_printf("\nSnake Length: %d", playerSize);
     
+    //Stuff for printed related to score
     MacUILib_printf("\n\nEffects only increases score. Tail will always increase by 1.\n1 point = 0\t2 points = +\t3 points = !\nScore: %d \n+%d points added!",myGM->getScore(),myGM->getPoints());
 
     if (myGM->getExitFlagStatus() == true)

@@ -8,8 +8,8 @@ You must watch the briefing video and read through the manual to engage in the d
 Section: C02 
 
 Team Information
-Member 1 MacID: rivera8
-Member 1 StudentID: 400510781
+Member 1 MacID: [rivera8]
+Member 1 StudentID: [400510781]
 
 Member 2 MacID: [mouzakik]
 Member 2 StudentID: [400511849]

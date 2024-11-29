@@ -3,25 +3,23 @@
 
 Player::Player(GameMechs* thisGMRef)
 {
-    mainGameMechsRef = thisGMRef;
-    playerPosList = new objPosArrayList();
-    myDir = STOP;
+    mainGameMechsRef = thisGMRef; // Store reference to GameMechs
+    playerPosList = new objPosArrayList(); // Initialize player position list
+    myDir = STOP; // Initialize player not moving
 
+    // Add starting head position to list
     objPos headPos(thisGMRef->getBoardSizeX() / 2, thisGMRef->getBoardSizeY() / 2, '*');
     playerPosList->insertHead(headPos);
 }
 
-
 Player::~Player()
 {
-    // delete any heap members here
-    delete playerPosList;
+    delete playerPosList; // delete heap members
 }
 
 objPosArrayList* Player::getPlayerPos() const
 {
-    return playerPosList;
-    // return the reference to the playerPos array list
+    return playerPosList; // return the reference to the playerPos array list
 }
 
 void Player::updatePlayerDir()
@@ -62,16 +60,16 @@ void Player::updatePlayerDir()
             break;
     }             
 
-    mainGameMechsRef->clearInput();
+    mainGameMechsRef->clearInput(); // Clear input after processing
 }
 
 void Player::movePlayer()
 {
-    updatePlayerDir();
+    updatePlayerDir(); // Update direction before moving
 
-    objPos currentHead = playerPosList->getHeadElement();
-    objPos newHead = currentHead;
-    objPosArrayList* foodPosList = mainGameMechsRef->getFoodPos();
+    objPos currentHead = playerPosList->getHeadElement(); // Get current head position
+    objPos newHead = currentHead; // Initialize new head position
+    objPosArrayList* foodPosList = mainGameMechsRef->getFoodPos(); // Get food positions
 
     switch(myDir)
     {
@@ -111,16 +109,38 @@ void Player::movePlayer()
         default:
             break;
     }
+
+    // Check for self collision
+    for (int k = 0; k < playerPosList->getSize(); k++) 
+    {
+        objPos bodyPart = playerPosList->getElement(k);
+
+        if (newHead.pos->x == bodyPart.pos->x && newHead.pos->y == bodyPart.pos->y) 
+        {
+            // Set lose and exit flag if head collides with part of snake body
+            if (k != playerPosList->getSize() - 1)
+            {
+                mainGameMechsRef->setLoseFlag();
+                mainGameMechsRef->setExitTrue();
+                return;
+            }
+        }
+    }
+
     objPos currentFood = foodPosList->getElement(0);
 
+    // Check for collision with food
     for (int i = 0; i < foodPosList->getSize(); i++)
     {
         currentFood = foodPosList->getElement(i);
+
         if (newHead.pos->x == currentFood.pos->x && newHead.pos->y == currentFood.pos->y)
         {
-            playerPosList->insertHead(newHead);
+            playerPosList->insertHead(newHead); // Add new head without removing tail if food collision
 
+            // Update score based on food symbol
             char symbolCollison = currentFood.getSymbol();
+
             switch ((int)symbolCollison)
             {
             case 48:
@@ -136,24 +156,22 @@ void Player::movePlayer()
                 break;
             }
         
-        //these have to be after
-        mainGameMechsRef->incrementScore();
+        mainGameMechsRef->incrementScore(); // Update total score
+
+        // Clear all food
         for (int j = 0; j < foodPosList->getSize(); j++)
         {
             foodPosList->removeHead();
             foodPosList->removeTail();
         }
         
-        mainGameMechsRef->generateFood(*playerPosList);
+        mainGameMechsRef->generateFood(*playerPosList); // Generate new food
 
+        return;
         }
-        else
-        {
-            playerPosList->insertHead(newHead);
-            playerPosList->removeTail();
-        }
-        
     }
-}
 
-// More methods to be added
+    // Add new head and remove tail when not food collision (normal movement)
+    playerPosList->insertHead(newHead);
+    playerPosList->removeTail();
+}

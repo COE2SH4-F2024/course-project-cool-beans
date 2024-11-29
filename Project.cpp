@@ -21,7 +21,6 @@ void CleanUp(void);
 
 int main(void)
 {
-
     Initialize();
 
     while(myGM->getExitFlagStatus() == false)  
@@ -33,7 +32,6 @@ int main(void)
     }
 
     CleanUp();
-
 }
 
 void Initialize(void)
@@ -43,8 +41,7 @@ void Initialize(void)
     
     srand(time(NULL));
 
-    srand(time(NULL));
-
+    // Initialize heap members
     myGM = new GameMechs();
     myPlayer = new Player(myGM);
 }
@@ -56,18 +53,23 @@ void GetInput(void)
 
     pressed = MacUILib_hasChar();
 
-    if(pressed == 1){
+    if(pressed == 1)
+    {
         simulatedInput = MacUILib_getChar();
     }
     
     myGM->setInput(simulatedInput);
-    if (simulatedInput == 'q') {
+
+    // Set exit flag if q is pressed
+    if (simulatedInput == 'q') 
+    {
         myGM->setExitTrue();
     }
 }
 
 void RunLogic(void)
 {
+    // Use Player class to update move player logic
     myPlayer->updatePlayerDir();
     myPlayer->movePlayer(); 
 }
@@ -76,10 +78,9 @@ void DrawScreen(void)
 {
     MacUILib_clearScreen();
     
-    objPosArrayList* playerPos = myPlayer->getPlayerPos();
-    int playerSize = playerPos->getSize();
-
-    objPosArrayList* foodPos = myGM->getFoodPos();
+    objPosArrayList* playerPos = myPlayer->getPlayerPos(); // Initialize player position
+    int playerSize = playerPos->getSize(); // Initialize player size
+    objPosArrayList* foodPos = myGM->getFoodPos(); // Initialize food position
     
     if (foodPos->getSize() < 3)
     {
@@ -90,7 +91,6 @@ void DrawScreen(void)
     
     int boardX = myGM->getBoardSizeX();
     int boardY = myGM->getBoardSizeY();
-
 
     objPos currentHead = myPlayer->getPlayerPos()->getHeadElement();
 
@@ -110,6 +110,7 @@ void DrawScreen(void)
                     break;
                 }
             }
+
             for(int m = 0; m < foodSize; m++)
             {
                     objPos thisSeg = foodPos->getElement(m);
@@ -122,6 +123,7 @@ void DrawScreen(void)
                     }
             }
             
+            // If not player, print border and blank spaces
             if(!printed)
             {   
                 if(i == boardX - 1)
@@ -151,12 +153,9 @@ void DrawScreen(void)
         MacUILib_printf("\nFood %d [x, y] = [%d, %d], %c",i+1,currentFood.pos->x, currentFood.pos->y, currentFood.symbol);
     }
 
-    int snakeLength = playerPos->getSize();
-    MacUILib_printf("\nSnake Length: %d", snakeLength);
+    MacUILib_printf("\nSnake Length: %d", playerSize);
     
     MacUILib_printf("\n\nEffects only increases score. Tail will always increase by 1.\n1 point = 0\t2 points = +\t3 points = !\nScore: %d \n+%d points added!",myGM->getScore(),myGM->getPoints());
-
-    //can change score statement later
 
     if (myGM->getExitFlagStatus() == true)
     {
@@ -169,9 +168,9 @@ void LoopDelay(void)
     MacUILib_Delay(DELAY_CONST); // 0.1s delay
 }
 
-
 void CleanUp(void)
 {
+    // Delete heap members
     delete myPlayer; 
     delete myGM;
 

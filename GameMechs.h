@@ -22,16 +22,16 @@ class GameMechs
         int boardSizeX;
         int boardSizeY;
 
-        objPosArrayList* foodPosList;
+        objPosArrayList* foodPosList; //food objPosArrayList
         
     public:
-        GameMechs();
-        GameMechs(int boardX, int boardY);
-        ~GameMechs(); 
+        GameMechs(); //default constructor
+        GameMechs(int boardX, int boardY); // parameterized constructor 
+        ~GameMechs();  //destructor 
 
         objPosArrayList* getFoodPos() const;
         
-        //getters and setters
+        //getters and setters -basic implementation from base Project code
         bool getExitFlagStatus() const; 
         void setExitTrue();
         bool getLoseFlagStatus() const;
@@ -49,9 +49,11 @@ class GameMechs
         
         // More methods should be added here
 
+        //set and get points value
         int getPoints() const;
         void setPoints(int new_points);
 
+        //random food generation
         void generateFood(objPosArrayList& playerPosList);
         
 };
